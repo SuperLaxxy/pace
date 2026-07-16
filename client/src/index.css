@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Base — navy near-black */
+  --bg-900:  #080B14;   /* latar halaman */
+  --bg-800:  #0E1322;   /* section */
+  --surface: #141A2B;   /* kartu/panel */
+  --surface-2:#1A2236;  /* nested / hover */
+  --border:  #232C44;   /* hairline */
+
+  /* Primary — gradien biru -> ungu (CTA & kata aksen judul) */
+  --grad-from:#4F7CFF;
+  --grad-to:  #9B5CF6;
+  --primary:  #5B7CFF;  /* solid fallback */
+  
+  /* Additional mockup colors used implicitly */
+  --blue: #3b82f6;
+  --purple: #8b5cf6;
+  --green: #10b981;
+  --orange: #f59e0b;
+  --bg-color: #05050f;
+  --bg-color-alt: #0a0a1a;
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+
+  /* Crypto/status */
+  --encrypted:#34D399;  /* "Terenkripsi", "Valid", checkmark */
+  --success:  #34D399;
+  --danger:   #F26D6D;
+  --warning:  #E2B14C;
+
+  /* Tile ikon (pilar & stat) */
+  --tile-blue:#1E2A52;   --tile-blue-ink:#6E8BFF;
+  --tile-purple:#2A2150; --tile-purple-ink:#A78BFA;
+  --tile-teal:#15322E;   --tile-teal-ink:#34D399;
+  --tile-amber:#332814;  --tile-amber-ink:#E2B14C;
+
+  /* Teks */
+  --text-100:#EEF1F8;
+  --text-300:#9AA6C4;
+  --text-500:#5E6A86;
+  --text-main: #f8f9fa;
+  --text-muted: #a0aab5;
+
+  /* Tipografi */
+  --font-display:'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body:   'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono:   'JetBrains Mono', ui-monospace, monospace;
+
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:20px;
+  --shadow:0 10px 30px rgba(0,0,0,.4);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-900);
+  color: var(--text-100);
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, .logo-text, .badge, .btn, .stat-value {
+  font-family: var(--font-display);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+input {
+  font-family: inherit;
+}
