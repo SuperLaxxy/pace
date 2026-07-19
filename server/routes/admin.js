@@ -5,9 +5,9 @@ const { db } = require('../db');
 const { authorizeAdmin, JWT_SECRET } = require('../middleware/auth');
 
 // Pastikan ejaan folder 'crypto-engine' dan file di dalamnya menggunakan huruf kecil semua di GitHub
-const { generateRsaKeypair, rsaUnwrapKey } = require('../../crypto-engine/rsa');
-const { verifyBallot } = require('../../crypto-engine/ecdsa');
-const { openBallot, serializeEnvelope } = require('../../crypto-engine/envelope');
+const { generateRsaKeypair, rsaUnwrapKey } = require('../crypto-engine/rsa');
+const { verifyBallot } = require('../crypto-engine/ecdsa');
+const { openBallot, serializeEnvelope } = require('../crypto-engine/envelope');
 
 const router = express.Router();
 
