@@ -5,7 +5,7 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 
 const authRoutes = require('./routes/auth');
-const adminRoutes = require('./routes/admin');
+const adminRouter = require('./routes/Admin');
 const votingRoutes = require('./routes/voting');
 
 const app = express();
