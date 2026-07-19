@@ -3,6 +3,8 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const { db } = require('../db');
 const { authorizeAdmin, JWT_SECRET } = require('../middleware/auth');
+
+// Pastikan ejaan folder 'crypto-engine' dan file di dalamnya menggunakan huruf kecil semua di GitHub
 const { generateRsaKeypair, rsaUnwrapKey } = require('../../crypto-engine/rsa');
 const { verifyBallot } = require('../../crypto-engine/ecdsa');
 const { openBallot, serializeEnvelope } = require('../../crypto-engine/envelope');
@@ -36,7 +38,7 @@ router.post('/login', (req, res) => {
   }
 });
 
-// Apply admin authorization middleware to all routes in this file
+// Perbaikan Jalur Otorisasi: Pastikan menggunakan 'router.use'
 router.use(authorizeAdmin);
 
 // POST /api/admin/elections
@@ -47,17 +49,15 @@ router.post('/elections', (req, res) => {
   }
 
   try {
-    // Generate RSA keypair for this election
     const { publicKey, privateKey } = generateRsaKeypair();
 
     const stmt = db.prepare('INSERT INTO elections (title, status, rsa_public_key_pem, start_at, end_at) VALUES (?, ?, ?, ?, ?)');
     const info = stmt.run(title, 'draft', publicKey, start_at || null, end_at || null);
 
-    // ONLY return privateKey once. NEVER store it in the database.
     res.status(201).json({
       message: 'Election created successfully',
       id: info.lastInsertRowid,
-      privateKeyPem: privateKey // KPU must download/save this!
+      privateKeyPem: privateKey
     });
   } catch (error) {
     console.error(error);
@@ -123,7 +123,6 @@ router.post('/elections/:id/tally', (req, res) => {
   }
 
   try {
-    // 1. Get election
     const election = db.prepare('SELECT status FROM elections WHERE id = ?').get(electionId);
     if (!election) {
       return res.status(404).json({ error: 'Election not found' });
@@ -132,31 +131,18 @@ router.post('/elections/:id/tally', (req, res) => {
       return res.status(400).json({ error: 'Election must be closed before tallying' });
     }
 
-    // 2. Fetch all ballots
     const ballots = db.prepare('SELECT * FROM ballots WHERE election_id = ?').all(electionId);
 
     let validCount = 0;
     let invalidCount = 0;
     const invalidBallots = [];
-    const results = {}; // candidateId -> count
+    const results = {};
 
-    // Fetch all candidates for this election to initialize results
     const candidates = db.prepare('SELECT id FROM candidates WHERE election_id = ?').all(electionId);
     candidates.forEach(c => results[c.id] = 0);
 
     for (const ballot of ballots) {
       try {
-        // Tally PRD E step 1: verifyBallot
-        const envelope = {
-          electionId: ballot.election_id,
-          wrappedKey: ballot.wrapped_key,
-          iv: ballot.iv,
-          ciphertext: ballot.ciphertext,
-          tag: ballot.hmac_tag,
-          nonce: ballot.nonce,
-          timestamp: ballot.created_at // Assuming created_at matches timestamp. We might need to store timestamp explicitly if it differs.
-        };
-        // wait, the envelope needs timestamp exact as signed. 
         const canonicalData = serializeEnvelope({
           electionId: ballot.election_id,
           wrappedKey: ballot.wrapped_key,
@@ -176,19 +162,15 @@ router.post('/elections/:id/tally', (req, res) => {
           throw new Error('Invalid signature');
         }
 
-        // Tally PRD E step 2: rsaUnwrapKey
         const keyMaterial = rsaUnwrapKey(privateKeyPem, ballot.wrapped_key);
         const K_enc = keyMaterial.subarray(0, 32);
         const K_mac = keyMaterial.subarray(32, 64);
 
-        // Tally PRD E step 3: openBallot
         const opened = openBallot({ iv: ballot.iv, ciphertext: ballot.ciphertext, tag: ballot.hmac_tag }, K_enc, K_mac);
         if (!opened.ok) {
           throw new Error('HMAC verification or decryption failed');
         }
 
-        // Tally PRD E step 4: increment count
-        // plaintext should be the candidate id (stringified)
         const candidateIdStr = opened.plaintext.trim();
         const candidateId = parseInt(candidateIdStr, 10);
 
