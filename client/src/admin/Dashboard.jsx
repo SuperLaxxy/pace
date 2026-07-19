@@ -7,14 +7,17 @@ export default function Dashboard() {
   const [auditLog, setAuditLog] = useState([]);
   const [elections, setElections] = useState([]);
 
+  // Tambahkan baris ini
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
   const fetchData = async () => {
     try {
       const headers = { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` };
       
-      const resElections = await fetch('/api/admin/elections', { headers });
+      const resElections = await fetch(`${baseUrl}/api/admin/elections`, { headers });
       if (resElections.ok) setElections(await resElections.json());
 
-      const resVoters = await fetch('/api/admin/voters', { headers });
+      const resVoters = await fetch(`${baseUrl}/api/admin/voters`, { headers });
       if (resVoters.ok) {
         const voters = await resVoters.json();
         setStats({
@@ -23,13 +26,13 @@ export default function Dashboard() {
         });
       }
 
-      const resVerify = await fetch('/api/admin/audit-log/verify', { headers });
+      const resVerify = await fetch(`${baseUrl}/api/admin/audit-log/verify`, { headers });
       if (resVerify.ok) {
         const verifyData = await resVerify.json();
         setIntegrity({ valid: verifyData.valid, checking: false });
       }
 
-      const resAudit = await fetch('/api/admin/audit-log', { headers });
+      const resAudit = await fetch(`${baseUrl}/api/admin/audit-log`, { headers });
       if (resAudit.ok) {
         const logs = await resAudit.json();
         setAuditLog(logs.reverse().slice(0, 5)); // Last 5 logs
