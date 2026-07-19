@@ -13,22 +13,23 @@ export default function Login() {
       // 1. Ambil URL backend dari env Vite, jika tidak ada (di lokal) gunakan localhost:3000
       const baseUrl = import.meta.env.VITE_API_URL || 'https://pacebackend-zv6gbafc.b4a.run';
 
-      // Di dalam fungsi onSubmit / handleLogin:
-      const response = await fetch(`${baseUrl}/api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }), // sesuaikan dengan variabel state kamu
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      // CONTOH YANG SALAH:
+      const response = await fetch(`${baseUrl}/api/auth/login`, { ... });
+      if (!res.ok) { // ❌ Error di sini! 'res' tidak didefinisikan karena di atas namanya 'response'
+        throw new Error('Login gagal');
+      }
 
-      localStorage.setItem('adminToken', data.token);
-      navigate('/admin/dashboard');
-    } catch (err) {
-      setError(err.message);
-    }
+      // CARA MEMPERBAIKINYA (Samakan menjadi 'res' semua):
+      const res = await fetch(`${baseUrl}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      if (!res.ok) { // 🟢 Sekarang aman karena namanya sudah sama-sama 'res'
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Login gagal');
+      }
   };
 
   return (
