@@ -1,7 +1,7 @@
-FROM node:20-alpine
+FROM node:20-slim
 
-# Instal tools untuk compile native addons (better-sqlite3)
-RUN apk add --no-cache python3 make g++
+# Instal build-essential untuk kompilasi better-sqlite3
+RUN apt-get update && apt-get install -y python3 build-essential && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
