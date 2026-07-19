@@ -12,10 +12,7 @@ const votingRoutes = require('./routes/voting');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Security Middlewares
-app.use(helmet());
-
-// === 1. CORS HARUS BERADA DI PALING ATAS ===
+// 1. Konfigurasi CORS paling atas
 app.use(cors({
   origin: '*', 
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -23,18 +20,23 @@ app.use(cors({
   credentials: true
 }));
 
-// === 2. LONGGARKAN HELMET AGAR TIDAK MEMBLOKIR RESPONS RESOURCE ===
+// 2. Cegah Helm memblokir resource lintas domain
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
   crossOriginOpenerPolicy: { policy: "unsafe-none" }
 }));
 
+// 🌟 TAMBAHKAN BLOK INI: Langsung potong jalur untuk OPTIONS (Preflight) agar selalu sukses 200
+app.options('*', (req, res) => {
+  res.sendStatus(200);
+});
+
 app.use(express.json({ limit: '100kb' })); // Limit body size
 
-// Rate limiting for auth routes
+// Rate limiting untuk auth routes (Biarkan tetap seperti ini)
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: { error: 'Too many requests, please try again later.' }
 });
 
