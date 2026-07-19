@@ -3,9 +3,12 @@ import { useState, useEffect } from 'react';
 export default function Voters() {
   const [voters, setVoters] = useState([]);
 
+  // Ambil URL backend dari env Vite, jika tidak ada (di lokal) gunakan localhost:3000
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
   const fetchVoters = async () => {
     try {
-      const res = await fetch('/api/admin/voters', {
+      const res = await fetch(`${baseUrl}/api/admin/voters`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
       });
       if (res.ok) {
@@ -27,7 +30,7 @@ export default function Voters() {
   const toggleActivation = async (id, currentStatus) => {
     if (!window.confirm(`Apakah Anda yakin ingin ${currentStatus ? 'menonaktifkan' : 'mengaktifkan'} pemilih ini?`)) return;
     try {
-      const res = await fetch(`/api/admin/voters/${id}/activate`, {
+      const res = await fetch(`${baseUrl}/api/admin/voters/${id}/activate`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
