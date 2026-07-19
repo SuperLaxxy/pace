@@ -9,8 +9,11 @@ export default function Candidates({ electionId }) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  // Tambahkan baris ini
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
   const fetchCandidates = async () => {
-    const res = await fetch(`/api/admin/elections/${electionId}/candidates`, {
+    const res = await fetch(`${baseUrl}/api/admin/elections/${electionId}/candidates`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
     });
     if (res.ok) {
@@ -18,15 +21,11 @@ export default function Candidates({ electionId }) {
     }
   };
 
-  useEffect(() => {
-    fetchCandidates();
-  }, [electionId]);
-
   const handleAdd = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
-    const res = await fetch('/api/admin/candidates', {
+    const res = await fetch(`${baseUrl}/api/admin/candidates`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
