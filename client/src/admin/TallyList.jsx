@@ -5,10 +5,14 @@ export default function TallyList() {
   const [elections, setElections] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Deklarasi URL backend
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
   useEffect(() => {
     const fetchElections = async () => {
       try {
-        const res = await fetch('/api/admin/elections', {
+        // Disesuaikan dengan baseUrl
+        const res = await fetch(`${baseUrl}/api/admin/elections`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
         });
         if (res.ok) {
@@ -22,7 +26,7 @@ export default function TallyList() {
       }
     };
     fetchElections();
-  }, []);
+  }, [baseUrl]);
 
   const formatElectionCode = (id) => `ELC-2026-${String(id).padStart(2, '0')}`;
 
