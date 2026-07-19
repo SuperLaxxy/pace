@@ -12,13 +12,16 @@ export default function CreateElection() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Tambahkan baris ini
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
   const handleCreate = async (e) => {
     e.preventDefault();
     if (loading) return;
     setLoading(true);
     
     try {
-      const res = await fetch('/api/admin/elections', {
+      const res = await fetch(`${baseUrl}/api/admin/elections`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
