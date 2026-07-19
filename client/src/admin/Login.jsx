@@ -10,7 +10,11 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/admin/login', {
+      // 1. Ambil URL backend dari env Vite, jika tidak ada (di lokal) gunakan localhost:3000
+      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+      // 2. Gabungkan baseUrl dengan endpoint API
+      const res = await fetch(`${baseUrl}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
