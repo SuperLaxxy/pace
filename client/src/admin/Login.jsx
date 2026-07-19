@@ -9,12 +9,13 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(''); // Bersihkan error lama sebelum mencoba login
+    setError(''); 
     
     try {
-      // Ambil URL backend dari env Vite, jika tidak ada gunakan default b4a
-      const baseUrl = import.meta.env.VITE_API_URL || 'https://pacebackend-zv6gbafc.b4a.run';
+      // 🟢 Langsung kunci URL Back4app kamu di sini untuk menghindari kegagalan env variable
+      const baseUrl = 'https://pacebackend-zv6gbafc.b4a.run';
 
+      // Pastikan menggunakan backtick ( ` ) seperti di bawah ini
       const res = await fetch(`${baseUrl}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -22,18 +23,24 @@ export default function Login() {
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Login gagal');
+        // Jika status code bukan 200-299, coba ambil pesan error-nya
+        const errorText = await res.text();
+        let errorMessage = 'Login gagal';
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.error || errorMessage;
+        } catch (e) {
+          errorMessage = errorText || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await res.json();
       
-      // Simpan token admin ke localStorage agar bisa dipakai komponen lain (seperti AuditLog)
       if (data.token) {
         localStorage.setItem('adminToken', data.token);
       }
       
-      // Arahkan admin menuju halaman dashboard utama setelah sukses
       navigate('/admin/dashboard');
 
     } catch (err) {
