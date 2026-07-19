@@ -6,12 +6,14 @@ import ElectionControl from './ElectionControl';
 export default function ElectionDetails() {
   const { id } = useParams();
   const [election, setElection] = useState(null);
-
   const [error, setError] = useState('');
+
+  // Tambahkan baris ini
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
   const fetchElection = async () => {
     try {
-      const res = await fetch(`/api/admin/elections/${id}`, {
+      const res = await fetch(`${baseUrl}/api/admin/elections/${id}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
       });
       if (res.ok) {
