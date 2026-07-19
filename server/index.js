@@ -14,7 +14,15 @@ const PORT = process.env.PORT || 3000;
 
 // Security Middlewares
 app.use(helmet());
-app.use(cors());
+
+// === PERBAIKAN CORS DI SINI ===
+app.use(cors({
+  origin: '*', // Mengizinkan semua domain, termasuk domain Vercel kamu
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+// ==============================
+
 app.use(express.json({ limit: '100kb' })); // Limit body size
 
 // Rate limiting for auth routes
