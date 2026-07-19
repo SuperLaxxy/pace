@@ -15,13 +15,19 @@ const PORT = process.env.PORT || 3000;
 // Security Middlewares
 app.use(helmet());
 
-// === PERBAIKAN CORS DI SINI ===
+// === 1. CORS HARUS BERADA DI PALING ATAS ===
 app.use(cors({
-  origin: '*', // Mengizinkan semua domain, termasuk domain Vercel kamu
+  origin: '*', 
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
-// ==============================
+
+// === 2. LONGGARKAN HELMET AGAR TIDAK MEMBLOKIR RESPONS RESOURCE ===
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginOpenerPolicy: { policy: "unsafe-none" }
+}));
 
 app.use(express.json({ limit: '100kb' })); // Limit body size
 
