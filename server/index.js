@@ -26,9 +26,12 @@ app.use(helmet({
   crossOriginOpenerPolicy: { policy: "unsafe-none" }
 }));
 
-// 🟢 Benar dan Aman untuk Express Versi Baru
-app.options('(.*)', (req, res) => {
-  res.sendStatus(200);
+// 🟢 Solusi Total: Cek manual method OPTIONS sebelum menyentuh rute manapun
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
 });
 
 app.use(express.json({ limit: '100kb' })); // Limit body size
