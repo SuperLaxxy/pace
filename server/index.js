@@ -26,8 +26,8 @@ app.use(helmet({
   crossOriginOpenerPolicy: { policy: "unsafe-none" }
 }));
 
-// 🌟 TAMBAHKAN BLOK INI: Langsung potong jalur untuk OPTIONS (Preflight) agar selalu sukses 200
-app.options('*', (req, res) => {
+// 🟢 Benar dan Aman untuk Express Versi Baru
+app.options('(.*)', (req, res) => {
   res.sendStatus(200);
 });
 
