@@ -11,13 +11,15 @@ export default function Login() {
     e.preventDefault();
     try {
       // 1. Ambil URL backend dari env Vite, jika tidak ada (di lokal) gunakan localhost:3000
-      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      const baseUrl = import.meta.env.VITE_API_URL || 'https://pacebackend-zv6gbafc.b4a.run';
 
-      // 2. Gabungkan baseUrl dengan endpoint API
-      const res = await fetch(`${baseUrl}/api/admin/login`, {
+      // Di dalam fungsi onSubmit / handleLogin:
+      const response = await fetch(`${baseUrl}/api/auth/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }), // sesuaikan dengan variabel state kamu
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
