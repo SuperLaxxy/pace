@@ -11,11 +11,15 @@ export default function Tally() {
   const [candidatesMap, setCandidatesMap] = useState({});
   const fileInputRef = useRef(null);
 
+  // Deklarasi URL backend
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
   const formatElectionCode = (id) => `ELC-2026-${String(id).padStart(2, '0')}`;
 
   useEffect(() => {
     const fetchCandidates = async () => {
-      const res = await fetch(`/api/admin/elections/${id}/candidates`, {
+      // Disesuaikan dengan baseUrl
+      const res = await fetch(`${baseUrl}/api/admin/elections/${id}/candidates`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
       });
       if (res.ok) {
@@ -26,7 +30,7 @@ export default function Tally() {
       }
     };
     fetchCandidates();
-  }, [id]);
+  }, [id, baseUrl]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -50,7 +54,8 @@ export default function Tally() {
     setError('');
     
     try {
-      const res = await fetch(`/api/admin/elections/${id}/tally`, {
+      // Disesuaikan dengan baseUrl
+      const res = await fetch(`${baseUrl}/api/admin/elections/${id}/tally`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -67,7 +72,6 @@ export default function Tally() {
       setError(err.message);
     } finally {
       setLoading(false);
-      // UX Kritis B: Immediately clear the private key from state/memory and DOM
       setFileContent(null);
       setFileName('');
       if (fileInputRef.current) {
