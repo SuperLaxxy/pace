@@ -9,27 +9,37 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError(''); // Bersihkan error lama sebelum mencoba login
+    
     try {
-      // 1. Ambil URL backend dari env Vite, jika tidak ada (di lokal) gunakan localhost:3000
+      // Ambil URL backend dari env Vite, jika tidak ada gunakan default b4a
       const baseUrl = import.meta.env.VITE_API_URL || 'https://pacebackend-zv6gbafc.b4a.run';
 
-      // CONTOH YANG SALAH:
-      const response = await fetch(`${baseUrl}/api/auth/login`, { ... });
-      if (!res.ok) { // ❌ Error di sini! 'res' tidak didefinisikan karena di atas namanya 'response'
-        throw new Error('Login gagal');
-      }
-
-      // CARA MEMPERBAIKINYA (Samakan menjadi 'res' semua):
       const res = await fetch(`${baseUrl}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
       });
 
-      if (!res.ok) { // 🟢 Sekarang aman karena namanya sudah sama-sama 'res'
+      if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || 'Login gagal');
       }
+
+      const data = await res.json();
+      
+      // Simpan token admin ke localStorage agar bisa dipakai komponen lain (seperti AuditLog)
+      if (data.token) {
+        localStorage.setItem('adminToken', data.token);
+      }
+      
+      // Arahkan admin menuju halaman dashboard utama setelah sukses
+      navigate('/admin/dashboard');
+
+    } catch (err) {
+      console.error(err);
+      setError(err.message || 'Gagal terhubung ke server');
+    }
   };
 
   return (
@@ -37,7 +47,8 @@ export default function Login() {
       <div className="auth-wrapper" style={{ margin: '0 auto' }}>
         <div className="text-center" style={{ marginBottom: '40px' }}>
           <div className="logo">
-            <span className="logo-text" style={{ fontSize: '2.5rem' }}>PACE</span><span className="logo-dot" style={{ fontSize: '2.5rem' }}>.</span>
+            <span className="logo-text" style={{ fontSize: '2.5rem' }}>PACE</span>
+            <span className="logo-dot" style={{ fontSize: '2.5rem' }}>.</span>
           </div>
           <p style={{ color: 'var(--text-muted)', marginTop: '8px' }}>Panel Admin KPU</p>
         </div>
@@ -49,7 +60,7 @@ export default function Login() {
               <p className="auth-subtitle">Masukkan kredensial KPU untuk mengelola pemilu.</p>
             </div>
 
-            {error && <div className="warning-text text-center">{error}</div>}
+            {error && <div className="warning-text text-center" style={{ color: '#ff4a4a', marginBottom: '16px' }}>{error}</div>}
 
             <div className="form-group">
               <label className="form-label">Nama Pengguna</label>
@@ -75,7 +86,9 @@ export default function Login() {
               />
             </div>
 
-            <button type="submit" className="btn btn-primary btn-large" style={{ width: '100%', marginTop: '12px' }}>Masuk Panel KPU</button>
+            <button type="submit" className="btn btn-primary btn-large" style={{ width: '100%', marginTop: '12px' }}>
+              Masuk Panel KPU
+            </button>
           </form>
 
           <div className="auth-footer text-center" style={{ marginTop: '24px' }}>
