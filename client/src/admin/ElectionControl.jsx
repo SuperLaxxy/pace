@@ -2,6 +2,9 @@ import { useState } from 'react';
 
 export default function ElectionControl({ election, onUpdate }) {
   const [loading, setLoading] = useState(false);
+  
+  // Tambahkan baris ini
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
   const updateStatus = async (newStatus) => {
     if (newStatus === 'closed') {
@@ -11,7 +14,7 @@ export default function ElectionControl({ election, onUpdate }) {
     }
 
     setLoading(true);
-    const res = await fetch(`/api/admin/elections/${election.id}/status`, {
+    const res = await fetch(`${baseUrl}/api/admin/elections/${election.id}/status`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
