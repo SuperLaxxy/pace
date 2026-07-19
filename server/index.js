@@ -4,8 +4,9 @@ const helmet = require('helmet');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 
+// Perbaikan 1: 'admin' diubah menjadi huruf kecil semua sesuai standar Linux
 const authRoutes = require('./routes/auth');
-const adminRouter = require('./routes/Admin');
+const adminRouter = require('./routes/admin'); 
 const votingRoutes = require('./routes/voting');
 
 const app = express();
@@ -25,8 +26,9 @@ const authLimiter = rateLimit({
 
 // Mount Routes
 app.use('/api/auth', authLimiter, authRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api', votingRoutes); // /api/elections/:id/vote, /api/voter/receipt, etc.
+// Perbaikan 2: Menggunakan nama variabel yang benar (adminRouter)
+app.use('/api/admin', adminRouter); 
+app.use('/api', votingRoutes); 
 
 // Global Error Handler
 app.use((err, req, res, next) => {
@@ -34,9 +36,10 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something broke!' });
 });
 
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-}
+// Perbaikan 3: Hapus kondisi IF agar serverExpress WAJIB menyala di Back4app (Production)
+// Ditambahkan '0.0.0.0' agar kontainer menerima koneksi luar untuk Health Check
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
-module.exports = app; // atau export default app; jika menggunakan ES Module
+module.exports = app;
