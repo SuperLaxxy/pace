@@ -18,12 +18,24 @@ export default function AuditLog() {
   }, []);
 
   const [verifyError, setVerifyError] = useState('');
+  
+  // Tambahkan baris ini
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+  const fetchLogs = async () => {
+    const res = await fetch(`${baseUrl}/api/admin/audit-log`, {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
+    });
+    if (res.ok) {
+      setLogs(await res.json());
+    }
+  };
 
   const verifyIntegrity = async () => {
     setVerificationResult(null);
     setVerifyError('');
     try {
-      const res = await fetch('/api/admin/audit-log/verify', {
+      const res = await fetch(`${baseUrl}/api/admin/audit-log/verify`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
       });
       if (res.ok) {
