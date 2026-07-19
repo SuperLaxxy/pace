@@ -46,25 +46,25 @@ export default function Login() {
 
             <div className="form-group">
               <label className="form-label">Nama Pengguna</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 className="form-control"
-                placeholder="Username KPU" 
-                value={username} 
-                onChange={e => setUsername(e.target.value)} 
-                required 
+                placeholder="Username KPU"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+                required
               />
             </div>
-            
+
             <div className="form-group">
               <label className="form-label">Kata Sandi</label>
-              <input 
-                type="password" 
+              <input
+                type="password"
                 className="form-control"
-                placeholder="••••••••" 
-                value={password} 
-                onChange={e => setPassword(e.target.value)} 
-                required 
+                placeholder="••••••••"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
               />
             </div>
 

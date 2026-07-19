@@ -60,7 +60,7 @@ test('PACE Backend Integration Tests', async (t) => {
       .set('Authorization', `Bearer ${adminToken}`)
       .send({ title: 'Pemilu Ketua BEM 2026' })
       .expect(201);
-    
+
     electionId = resElec.body.id;
     rsaPrivateKeyPem = resElec.body.privateKeyPem; // KPU saves it offline
     assert.ok(rsaPrivateKeyPem);
@@ -71,7 +71,7 @@ test('PACE Backend Integration Tests', async (t) => {
       .set('Authorization', `Bearer ${adminToken}`)
       .send({ election_id: electionId, ballot_number: 1, name: 'Alice' })
       .expect(201);
-    
+
     candidateId = resCand.body.id;
 
     // Open Election
@@ -88,7 +88,7 @@ test('PACE Backend Integration Tests', async (t) => {
       .post('/api/auth/register')
       .send({ nim: '12345', name: 'Bob', password: 'password123' })
       .expect(201);
-      
+
     // Activate voter via admin endpoint
     await request(app)
       .patch(`/api/admin/voters/${resReg.body.id}/activate`)
@@ -101,7 +101,7 @@ test('PACE Backend Integration Tests', async (t) => {
       .post('/api/auth/login')
       .send({ nim: '12345', password: 'password123' })
       .expect(200);
-    
+
     token = resLogin.body.token;
     voterId = resLogin.body.voter.id;
 
@@ -119,7 +119,7 @@ test('PACE Backend Integration Tests', async (t) => {
       .get(`/api/elections/${electionId}/pubkey`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
-    
+
     rsaPublicKeyPem = resPubKey.body.publicKeyPem;
     assert.ok(rsaPublicKeyPem);
 
@@ -132,7 +132,7 @@ test('PACE Backend Integration Tests', async (t) => {
     const { iv, ciphertext } = aesEncrypt(plaintext, K_enc);
     const tag = hmacTag(K_mac, iv, ciphertext);
     const wrappedKey = clientRsaWrapKey(rsaPublicKeyPem, keyMaterial);
-    
+
     const nonce = crypto.randomBytes(16).toString('hex');
     const timestamp = new Date().toISOString();
 
@@ -160,7 +160,7 @@ test('PACE Backend Integration Tests', async (t) => {
       .set('Authorization', `Bearer ${token}`)
       .send({ ...envelope, candidateId })
       .expect(201);
-    
+
     assert.ok(resVote.body.receiptHash);
   });
 
@@ -176,9 +176,9 @@ test('PACE Backend Integration Tests', async (t) => {
       nonce: lastValidVoteEnvelope.nonce,
       timestamp: lastValidVoteEnvelope.timestamp
     });
-    
+
     const signature = signBallot(voterKeypair.privateKey, canonicalData);
-    
+
     const envelope = {
       ...lastValidVoteEnvelope,
       signature,
@@ -190,7 +190,7 @@ test('PACE Backend Integration Tests', async (t) => {
       .post(`/api/elections/${electionId}/vote`)
       .set('Authorization', `Bearer ${token}`)
       .send(envelope)
-      .expect(400); 
+      .expect(400);
 
     assert.strictEqual(res.body.error, 'Replay detected: nonce already used');
   });
@@ -241,7 +241,7 @@ test('PACE Backend Integration Tests', async (t) => {
     const timestamp = new Date().toISOString();
 
     const canonicalData = serializeEnvelope({ electionId, wrappedKey, iv, ciphertext, tag, nonce, timestamp });
-    
+
     // Eve signs with HER key, but claims to be Bob (signerPublicKeyId: voterId)
     // Wait, the API checks signerPublicKeyId against req.user.id. Eve is logged in as Eve, so she MUST send her own signerPublicKeyId.
     // If she sends her own signerPublicKeyId, she just casts her own valid vote.
@@ -262,9 +262,9 @@ test('PACE Backend Integration Tests', async (t) => {
     const resMal = await request(app).post('/api/auth/login').send({ nim: '88888', password: 'pwd' });
     const malToken = resMal.body.token;
     const malId = resMal.body.voter.id;
-    const malKeypair = generateEcdsaKeypair(); 
+    const malKeypair = generateEcdsaKeypair();
     await request(app).post('/api/voter/publickey').set('Authorization', `Bearer ${malToken}`).send({ publicKeyPem: malKeypair.publicKey }).expect(200);
-    
+
     // Mallory casts vote
     const K_enc = crypto.randomBytes(32);
     const K_mac = crypto.randomBytes(32);
