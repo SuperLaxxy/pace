@@ -3,9 +3,9 @@ const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
 const { db, transaction } = require('../db');
 const { authenticate } = require('../middleware/auth');
-const { verifyBallot } = require('../../crypto-engine/ecdsa');
-const { serializeEnvelope } = require('../../crypto-engine/envelope');
-const { auditAppend } = require('../../crypto-engine/audit-chain');
+const { verifyBallot } = require('../crypto-engine/ecdsa');
+const { serializeEnvelope } = require('../crypto-engine/envelope');
+const { auditAppend } = require('../crypto-engine/audit-chain');
 
 const router = express.Router();
 
