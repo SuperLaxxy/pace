@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 export default function Dashboard() {
   const [candidates, setCandidates] = useState([]);
@@ -28,7 +29,7 @@ export default function Dashboard() {
     async function fetchActiveElection() {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch('/api/elections/active', {
+        const res = await fetch(`${API_BASE_URL}/api/elections/active`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!res.ok) throw new Error('No active election');
@@ -43,7 +44,7 @@ export default function Dashboard() {
 
     async function fetchCandidates(electionId, token) {
       try {
-        const res = await fetch(`/api/elections/${electionId}/candidates`, {
+        const res = await fetch(`${API_BASE_URL}/api/elections/${electionId}/candidates`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!res.ok) throw new Error('Failed to fetch candidates');
@@ -57,7 +58,7 @@ export default function Dashboard() {
     }
     
     fetchActiveElection();
-  }, []);
+  }, [navigate]);
 
   const handleVoteClick = (candidate) => {
     if (!election) return;
