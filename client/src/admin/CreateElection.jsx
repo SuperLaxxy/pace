@@ -12,8 +12,8 @@ export default function CreateElection() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Tambahkan baris ini
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+  // 🟢 Ganti baris 15 menjadi:
+  const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
 
   const handleCreate = async (e) => {
     e.preventDefault();
