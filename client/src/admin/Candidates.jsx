@@ -9,8 +9,8 @@ export default function Candidates({ electionId }) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Tambahkan baris ini
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+  // 🟢 Ganti baris 12 menjadi:
+  const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
 
   const fetchCandidates = async () => {
     const res = await fetch(`${baseUrl}/api/admin/elections/${electionId}/candidates`, {
