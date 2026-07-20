@@ -12,41 +12,44 @@ export default function Login() {
     setError(''); 
     
     try {
+      // Domain Back4app aktif
       const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
 
-    const res = await fetch(`${baseUrl}/api/admin/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    });
+      const res = await fetch(`${baseUrl}/api/admin/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
 
-    if (!res.ok) {
-      const errorText = await res.text();
-      let errorMessage = 'Login gagal';
-      try {
-        const errorData = JSON.parse(errorText);
-        errorMessage = errorData.error || errorMessage;
-      } catch (e) {
-        errorMessage = errorText || errorMessage;
+      if (!res.ok) {
+        const errorText = await res.text();
+        let errorMessage = 'Login gagal';
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.error || errorMessage;
+        } catch (e) {
+          errorMessage = errorText || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
-      throw new Error(errorMessage);
-    }
 
-    const data = await res.json();
-    if (data.token) {
-      localStorage.setItem('adminToken', data.token);
-    }
-    navigate('/admin/dashboard');
+      const data = await res.json();
+      
+      if (data.token) {
+        localStorage.setItem('adminToken', data.token);
+      }
+      
+      navigate('/admin/dashboard');
 
-  } catch (err) {
-    console.error(err);
-    // Pesan yang lebih informatif jika server Back4app sedang cold start
-    if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
-      setError('Server sedang melakukan warming up/sleep. Silakan coba klik tombol login sekali lagi dalam beberapa detik.');
-    } else {
-      setError(err.message || 'Gagal terhubung ke server');
+    } catch (err) {
+      console.error(err);
+      if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
+        setError('Server sedang melakukan warming up/sleep. Silakan coba klik tombol login sekali lagi dalam beberapa detik.');
+      } else {
+        setError(err.message || 'Gagal terhubung ke server');
+      }
     }
-  }
+  };
 
   return (
     <div className="auth-layout">
