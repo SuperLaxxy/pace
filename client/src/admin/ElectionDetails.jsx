@@ -2,18 +2,16 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Candidates from './Candidates';
 import ElectionControl from './ElectionControl';
+import { API_BASE_URL } from '../config';
 
 export default function ElectionDetails() {
   const { id } = useParams();
   const [election, setElection] = useState(null);
   const [error, setError] = useState('');
 
-  // 🟢 Ganti baris 11 menjadi:
-  const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
-
   const fetchElection = async () => {
     try {
-      const res = await fetch(`${baseUrl}/api/admin/elections/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/elections/${id}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
       });
       if (res.ok) {
@@ -28,7 +26,7 @@ export default function ElectionDetails() {
   };
 
   useEffect(() => {
-    fetchElection();
+    if (id) fetchElection();
   }, [id]);
 
   if (error) return <div className="verification-banner error" style={{ margin: '40px' }}>{error}</div>;
