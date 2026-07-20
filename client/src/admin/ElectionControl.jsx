@@ -22,11 +22,17 @@ export default function ElectionControl({ election, onUpdate }) {
         body: JSON.stringify({ status: newStatus })
       });
       
-      const data = await res.json();
+      const text = await res.text();
+      let data = {};
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        throw new Error(`Server merespon HTML/Non-JSON (${res.status}): ${text.substring(0, 100)}...`);
+      }
 
       if (res.ok) {
         alert(`Status pemilu berhasil diubah menjadi: ${newStatus.toUpperCase()}`);
-        if (onUpdate) onUpdate(); // Refetch data pemilu di parent component
+        if (onUpdate) onUpdate();
       } else {
         alert(`Gagal memperbarui status: ${data.error || 'Terjadi kesalahan'}`);
       }
