@@ -27,7 +27,7 @@ export default function ElectionControl({ election, onUpdate }) {
       try {
         data = JSON.parse(text);
       } catch (e) {
-        throw new Error(`Server merespon HTML/Non-JSON (${res.status}): ${text.substring(0, 100)}...`);
+        throw new Error(`Status ${res.status}: ${text.substring(0, 100)}...`);
       }
 
       if (res.ok) {
