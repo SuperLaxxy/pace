@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const { db } = require('../db');
 const { authorizeAdmin, JWT_SECRET } = require('../middleware/auth');
 
-// Pastikan ejaan folder 'crypto-engine' dan file di dalamnya menggunakan huruf kecil semua di GitHub
 const { generateRsaKeypair, rsaUnwrapKey } = require('../crypto-engine/rsa');
 const { verifyBallot } = require('../crypto-engine/ecdsa');
 const { openBallot, serializeEnvelope } = require('../crypto-engine/envelope');
@@ -20,7 +19,7 @@ function verifyPassword(password, hashStr) {
   return crypto.timingSafeEqual(keyBuffer, derivedKey);
 }
 
-// POST /api/admin/login
+// POST /api/admin/login (Tanpa Otorisasi)
 router.post('/login', (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) return res.status(400).json({ error: 'Username and password are required' });
@@ -38,7 +37,15 @@ router.post('/login', (req, res) => {
   }
 });
 
-// Perbaikan Jalur Otorisasi: Pastikan menggunakan 'router.use'
+// 🟢 PERBAIKAN: Middleware untuk menangani request OPTIONS sebelum authorizeAdmin
+router.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
+// Menerapkan authorizeAdmin untuk seluruh rute di bawah ini
 router.use(authorizeAdmin);
 
 // POST /api/admin/elections
