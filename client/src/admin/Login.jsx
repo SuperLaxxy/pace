@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -12,10 +13,7 @@ export default function Login() {
     setError(''); 
     
     try {
-      // Ganti URL ini dengan Temporary URL yang aktif dari Back4app:
-      const baseUrl = 'https://pacebackend-sd7pybnw.b4a.run';
-
-      const res = await fetch(`${baseUrl}/api/admin/login`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
