@@ -4,8 +4,8 @@ export default function AuditLog() {
   const [logs, setLogs] = useState([]);
   const [verificationResult, setVerificationResult] = useState(null);
 
-  // Deklarasikan baseUrl di sini agar bisa dipakai oleh semua fungsi di bawahnya
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+  // 🟢 Ganti ke domain Back4app aktif
+  const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
 
   // HANYA PERLU SATU FUNGSI fetchLogs SEPERTI INI:
   const fetchLogs = async () => {
