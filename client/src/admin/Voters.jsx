@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 
 export default function Voters() {
   const [voters, setVoters] = useState([]);
 
-  // 🟢 Ganti ke domain Back4app aktif
-  const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
-
   const fetchVoters = async () => {
     try {
-      const res = await fetch(`${baseUrl}/api/admin/voters`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/voters`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
       });
       if (res.ok) {
@@ -30,7 +28,7 @@ export default function Voters() {
   const toggleActivation = async (id, currentStatus) => {
     if (!window.confirm(`Apakah Anda yakin ingin ${currentStatus ? 'menonaktifkan' : 'mengaktifkan'} pemilih ini?`)) return;
     try {
-      const res = await fetch(`${baseUrl}/api/admin/voters/${id}/activate`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/voters/${id}/activate`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
