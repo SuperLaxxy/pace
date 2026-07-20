@@ -1,19 +1,16 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 
 export default function Candidates({ electionId }) {
   const [candidates, setCandidates] = useState([]);
   const [name, setName] = useState('');
   const [ballotNumber, setBallotNumber] = useState('');
   const [vision, setVision] = useState('');
-
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // 🟢 Ganti baris 12 menjadi:
-  const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
-
   const fetchCandidates = async () => {
-    const res = await fetch(`${baseUrl}/api/admin/elections/${electionId}/candidates`, {
+    const res = await fetch(`${API_BASE_URL}/api/admin/elections/${electionId}/candidates`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
     });
     if (res.ok) {
@@ -21,11 +18,15 @@ export default function Candidates({ electionId }) {
     }
   };
 
+  useEffect(() => {
+    if (electionId) fetchCandidates();
+  }, [electionId]);
+
   const handleAdd = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
-    const res = await fetch(`${baseUrl}/api/admin/candidates`, {
+    const res = await fetch(`${API_BASE_URL}/api/admin/candidates`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
