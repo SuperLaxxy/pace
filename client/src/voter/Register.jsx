@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 export default function Register() {
   const [nim, setNim] = useState('');
@@ -15,7 +16,7 @@ export default function Register() {
     setError('');
     
     try {
-      const res = await fetch('/api/auth/register', {
+      const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nim, name, password })
@@ -27,8 +28,6 @@ export default function Register() {
         throw new Error(data.error || 'Registrasi gagal');
       }
 
-      // Hapus kunci lama yang mungkin tersisa di localStorage jika database di-reset
-      // karena ID yang baru (data.id) mungkin sama dengan ID dari database sebelumnya.
       if (data.id) {
         localStorage.removeItem(`pace_voter_private_key_${data.id}`);
       }
