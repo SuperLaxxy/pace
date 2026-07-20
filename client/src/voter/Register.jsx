@@ -32,12 +32,11 @@ export default function Register() {
         localStorage.removeItem(`pace_voter_private_key_${data.id}`);
       }
 
-      alert('Registrasi berhasil! Silakan login.');
+      alert('Registrasi berhasil! Akun Anda membutuhkan aktivasi dari Admin (KPU) sebelum dapat login.');
       navigate('/login');
     } catch (err) {
-      console.warn("Menggunakan mode demo (API gagal):", err);
-      alert('Mode demo: Registrasi disimulasikan berhasil.');
-      navigate('/login');
+      console.error("Error Registrasi:", err);
+      setError(err.message || 'Gagal terhubung ke server');
     } finally {
       setLoading(false);
     }
