@@ -1,18 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 export default function TallyList() {
   const [elections, setElections] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🟢 Ganti baris 9 menjadi:
-  const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
-
   useEffect(() => {
     const fetchElections = async () => {
       try {
-        // Disesuaikan dengan baseUrl
-        const res = await fetch(`${baseUrl}/api/admin/elections`, {
+        const res = await fetch(`${API_BASE_URL}/api/admin/elections`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
         });
         if (res.ok) {
@@ -26,7 +23,7 @@ export default function TallyList() {
       }
     };
     fetchElections();
-  }, [baseUrl]);
+  }, []);
 
   const formatElectionCode = (id) => `ELC-2026-${String(id).padStart(2, '0')}`;
 
