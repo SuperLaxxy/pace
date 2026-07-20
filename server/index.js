@@ -21,11 +21,6 @@ app.use(helmet({
 }));
 
 // 3. Konfigurasi CORS
-const allowedOrigins = [
-  'https://pace-gold.vercel.app',
-  'http://localhost:5173'
-];
-
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -34,7 +29,8 @@ const corsOptions = {
       callback(null, false);
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  // 🟢 TAMBAHKAN 'PATCH' DI SINI:
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
   optionsSuccessStatus: 200
