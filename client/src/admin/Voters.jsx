@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react';
 export default function Voters() {
   const [voters, setVoters] = useState([]);
 
-  // Ambil URL backend dari env Vite, jika tidak ada (di lokal) gunakan localhost:3000
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+  // 🟢 Ganti ke domain Back4app aktif
+  const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
 
   const fetchVoters = async () => {
     try {
