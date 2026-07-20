@@ -15,7 +15,8 @@ export default function Login() {
       // Ganti URL ke domain unik Back4app kamu yang aktif:
       const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
 
-      const res = await fetch(`${baseUrl}/api/auth/login`, {
+      // 🟢 Benar (Menembak rute login khusus Admin KPU)
+      const res = await fetch(`${baseUrl}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
