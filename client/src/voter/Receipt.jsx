@@ -14,6 +14,7 @@ export default function Receipt() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('voter_id');
+    localStorage.removeItem('voter_nim');
     navigate('/login');
   };
 
