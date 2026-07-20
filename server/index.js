@@ -11,7 +11,7 @@ const votingRoutes = require('./routes/voting');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 1. Wajib di Back4app agar express-rate-limit mengenali IP Reverse Proxy tanpa crash
+// 1. Wajib di Back4app agar express-rate-limit mengenali IP Reverse Proxy
 app.set('trust proxy', 1);
 
 // 2. Helmet dipasang paling atas
@@ -19,6 +19,12 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
   crossOriginOpenerPolicy: { policy: "unsafe-none" }
 }));
+
+// 🟢 PERBAIKAN: Definisi allowedOrigins DILAKUKAN SEBELUM DIGUNAKAN
+const allowedOrigins = [
+  'https://pace-gold.vercel.app',
+  'http://localhost:5173'
+];
 
 // 3. Konfigurasi CORS
 const corsOptions = {
@@ -29,14 +35,13 @@ const corsOptions = {
       callback(null, false);
     }
   },
-  // 🟢 TAMBAHKAN 'PATCH' DI SINI:
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
   optionsSuccessStatus: 200
 };
 
-// 4. Terapkan CORS sebagai Global Middleware (otomatis menangani OPTIONS & CORS header untuk semua rute!)
+// 4. Terapkan CORS sebagai Global Middleware
 app.use(cors(corsOptions));
 
 // 5. Body Parser
