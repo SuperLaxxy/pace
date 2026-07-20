@@ -82,33 +82,25 @@ router.post('/candidates', (req, res) => {
   }
 });
 
-// PATCH /api/admin/elections/:id/status
-router.patch('/elections/:id/status', (req, res) => {
-  const { status } = req.body;
-  if (!['draft', 'open', 'closed'].includes(status)) {
-    return res.status(400).json({ error: 'Invalid status' });
-  }
+// PATCH /api/admin/voters/:id/activate
+router.patch('/voters/:id/activate', (req, res) => {
+  const { is_active } = req.body;
+  const voterId = req.params.id;
 
   try {
-    const election = db.prepare('SELECT status FROM elections WHERE id = ?').get(req.params.id);
-    if (!election) {
-      return res.status(404).json({ error: 'Election not found' });
-    }
+    // 1. Ambil data pemilih untuk info audit log
+    const voter = db.prepare('SELECT nim, name FROM voters WHERE id = ?').get(voterId);
+    if (!voter) return res.status(404).json({ error: 'Pemilih tidak ditemukan' });
 
-    const currentStatus = election.status;
-    const isValidTransition =
-      (currentStatus === 'draft' && status === 'open') ||
-      (currentStatus === 'open' && status === 'closed');
+    // 2. Update status aktivasi
+    db.prepare('UPDATE voters SET is_active = ? WHERE id = ?').run(is_active ? 1 : 0, voterId);
 
-    if (!isValidTransition && currentStatus !== status) {
-      return res.status(400).json({ error: `Invalid status transition from ${currentStatus} to ${status}` });
-    }
-
-    const stmt = db.prepare('UPDATE elections SET status = ? WHERE id = ?');
-    stmt.run(status, req.params.id);
-    res.json({ message: `Election status updated to ${status}` });
+    // 3. Catat ke Audit Log jika ada helper audit log (opsional)
+    // misal: VOTER_ACTIVATED
+    
+    res.json({ message: 'Voter status updated', is_active });
   } catch (error) {
-    console.error(error);
+    console.error('Error updating voter status:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
