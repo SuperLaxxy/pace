@@ -12,10 +12,9 @@ export default function Login() {
     setError(''); 
     
     try {
-      // 🟢 Langsung kunci URL Back4app kamu di sini untuk menghindari kegagalan env variable
-      const baseUrl = 'https://pacebackend-zv6gbafc.b4a.run';
+      // Ganti URL ke domain unik Back4app kamu yang aktif:
+      const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
 
-      // Pastikan menggunakan backtick ( ` ) seperti di bawah ini
       const res = await fetch(`${baseUrl}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
