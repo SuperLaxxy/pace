@@ -7,8 +7,8 @@ export default function Dashboard() {
   const [auditLog, setAuditLog] = useState([]);
   const [elections, setElections] = useState([]);
 
-  // Tambahkan baris ini
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+  // 🟢 Ganti ke domain Back4app aktif
+  const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
 
   const fetchData = async () => {
     try {
