@@ -36,14 +36,17 @@ export default function Voters() {
         },
         body: JSON.stringify({ is_active: !currentStatus })
       });
+
+      const data = await res.json();
+
       if (res.ok) {
         fetchVoters();
       } else {
-        const data = await res.json();
         alert(data.error || 'Gagal mengubah status pemilih');
       }
     } catch (e) {
-      alert('Mode simulasi, server tidak merespon.');
+      console.error(e);
+      alert(`Gagal terhubung ke server: ${e.message}`);
     }
   };
 
