@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { generateEcdsaKeypair, exportPublicKeySpkiPem } from '../crypto/ecdsa.js';
 import { storePrivateKey } from '../crypto/keystore.js';
+import { API_BASE_URL } from '../config';
 
 export default function KeySetup() {
   const [password, setPassword] = useState('');
@@ -31,7 +32,7 @@ export default function KeySetup() {
       const pubKeyPem = await exportPublicKeySpkiPem(keypair.publicKey);
       
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/voter/publickey', {
+      const response = await fetch(`${API_BASE_URL}/api/voter/publickey`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
