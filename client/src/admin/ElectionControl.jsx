@@ -3,8 +3,8 @@ import { useState } from 'react';
 export default function ElectionControl({ election, onUpdate }) {
   const [loading, setLoading] = useState(false);
   
-  // Tambahkan baris ini
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+  // 🟢 Ganti baris 7 menjadi:
+  const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
 
   const updateStatus = async (newStatus) => {
     if (newStatus === 'closed') {
