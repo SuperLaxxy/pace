@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 export default function Tally() {
   const { id } = useParams();
@@ -11,15 +12,11 @@ export default function Tally() {
   const [candidatesMap, setCandidatesMap] = useState({});
   const fileInputRef = useRef(null);
 
-  // 🟢 Ganti baris 14 menjadi:
-  const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
-
   const formatElectionCode = (id) => `ELC-2026-${String(id).padStart(2, '0')}`;
 
   useEffect(() => {
     const fetchCandidates = async () => {
-      // Disesuaikan dengan baseUrl
-      const res = await fetch(`${baseUrl}/api/admin/elections/${id}/candidates`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/elections/${id}/candidates`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
       });
       if (res.ok) {
@@ -29,8 +26,8 @@ export default function Tally() {
         setCandidatesMap(map);
       }
     };
-    fetchCandidates();
-  }, [id, baseUrl]);
+    if (id) fetchCandidates();
+  }, [id]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -54,8 +51,7 @@ export default function Tally() {
     setError('');
     
     try {
-      // Disesuaikan dengan baseUrl
-      const res = await fetch(`${baseUrl}/api/admin/elections/${id}/tally`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/elections/${id}/tally`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
