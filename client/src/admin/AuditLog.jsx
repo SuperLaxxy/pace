@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 
 export default function AuditLog() {
   const [logs, setLogs] = useState([]);
   const [verificationResult, setVerificationResult] = useState(null);
+  const [verifyError, setVerifyError] = useState('');
 
-  // 🟢 Ganti ke domain Back4app aktif
-  const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
-
-  // HANYA PERLU SATU FUNGSI fetchLogs SEPERTI INI:
   const fetchLogs = async () => {
-    const res = await fetch(`${baseUrl}/api/admin/audit-log`, {
+    const res = await fetch(`${API_BASE_URL}/api/admin/audit-log`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
     });
     if (res.ok) {
@@ -21,13 +19,11 @@ export default function AuditLog() {
     fetchLogs();
   }, []);
 
-  const [verifyError, setVerifyError] = useState('');
-
   const verifyIntegrity = async () => {
     setVerificationResult(null);
     setVerifyError('');
     try {
-      const res = await fetch(`${baseUrl}/api/admin/audit-log/verify`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/audit-log/verify`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
       });
       if (res.ok) {
