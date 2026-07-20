@@ -8,8 +8,8 @@ export default function ElectionDetails() {
   const [election, setElection] = useState(null);
   const [error, setError] = useState('');
 
-  // Tambahkan baris ini
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+  // 🟢 Ganti baris 11 menjadi:
+  const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
 
   const fetchElection = async () => {
     try {
