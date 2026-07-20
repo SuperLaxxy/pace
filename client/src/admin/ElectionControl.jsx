@@ -12,21 +12,29 @@ export default function ElectionControl({ election, onUpdate }) {
     }
 
     setLoading(true);
-    const res = await fetch(`${API_BASE_URL}/api/admin/elections/${election.id}/status`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-      },
-      body: JSON.stringify({ status: newStatus })
-    });
-    
-    setLoading(false);
-    if (res.ok) {
-      onUpdate();
-    } else {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/elections/${election.id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      
       const data = await res.json();
-      alert(`Gagal memperbarui status: ${data.error}`);
+
+      if (res.ok) {
+        alert(`Status pemilu berhasil diubah menjadi: ${newStatus.toUpperCase()}`);
+        if (onUpdate) onUpdate(); // Refetch data pemilu di parent component
+      } else {
+        alert(`Gagal memperbarui status: ${data.error || 'Terjadi kesalahan'}`);
+      }
+    } catch (err) {
+      console.error("Error updating election status:", err);
+      alert(`Gagal terhubung ke server: ${err.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -35,14 +43,14 @@ export default function ElectionControl({ election, onUpdate }) {
       <h3>Kontrol Pemilu</h3>
       <p>Status Saat Ini: <strong>{election.status}</strong></p>
       
-      <div className="control-actions">
+      <div className="control-actions" style={{ marginTop: '12px' }}>
         {election.status === 'draft' && (
           <button 
             onClick={() => updateStatus('open')} 
             disabled={loading}
-            className="btn-primary"
+            className="btn btn-primary"
           >
-            Buka Pemilu
+            {loading ? 'Memproses...' : 'Buka Pemilu'}
           </button>
         )}
         
@@ -50,9 +58,9 @@ export default function ElectionControl({ election, onUpdate }) {
           <button 
             onClick={() => updateStatus('closed')} 
             disabled={loading}
-            className="btn-danger"
+            className="btn btn-danger"
           >
-            Tutup Pemilu
+            {loading ? 'Memproses...' : 'Tutup Pemilu'}
           </button>
         )}
         
