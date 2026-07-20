@@ -11,8 +11,8 @@ export default function Tally() {
   const [candidatesMap, setCandidatesMap] = useState({});
   const fileInputRef = useRef(null);
 
-  // Deklarasi URL backend
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+  // 🟢 Ganti baris 14 menjadi:
+  const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
 
   const formatElectionCode = (id) => `ELC-2026-${String(id).padStart(2, '0')}`;
 
