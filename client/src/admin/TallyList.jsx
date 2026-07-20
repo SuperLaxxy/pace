@@ -5,8 +5,8 @@ export default function TallyList() {
   const [elections, setElections] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Deklarasi URL backend
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+  // 🟢 Ganti baris 9 menjadi:
+  const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
 
   useEffect(() => {
     const fetchElections = async () => {
