@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({ voters: 0, votes: 0 });
@@ -7,17 +8,14 @@ export default function Dashboard() {
   const [auditLog, setAuditLog] = useState([]);
   const [elections, setElections] = useState([]);
 
-  // 🟢 Ganti ke domain Back4app aktif
-  const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
-
   const fetchData = async () => {
     try {
       const headers = { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` };
       
-      const resElections = await fetch(`${baseUrl}/api/admin/elections`, { headers });
+      const resElections = await fetch(`${API_BASE_URL}/api/admin/elections`, { headers });
       if (resElections.ok) setElections(await resElections.json());
 
-      const resVoters = await fetch(`${baseUrl}/api/admin/voters`, { headers });
+      const resVoters = await fetch(`${API_BASE_URL}/api/admin/voters`, { headers });
       if (resVoters.ok) {
         const voters = await resVoters.json();
         setStats({
@@ -26,16 +24,16 @@ export default function Dashboard() {
         });
       }
 
-      const resVerify = await fetch(`${baseUrl}/api/admin/audit-log/verify`, { headers });
+      const resVerify = await fetch(`${API_BASE_URL}/api/admin/audit-log/verify`, { headers });
       if (resVerify.ok) {
         const verifyData = await resVerify.json();
         setIntegrity({ valid: verifyData.valid, checking: false });
       }
 
-      const resAudit = await fetch(`${baseUrl}/api/admin/audit-log`, { headers });
+      const resAudit = await fetch(`${API_BASE_URL}/api/admin/audit-log`, { headers });
       if (resAudit.ok) {
         const logs = await resAudit.json();
-        setAuditLog(logs.reverse().slice(0, 5)); // Last 5 logs
+        setAuditLog(logs.reverse().slice(0, 5));
       }
 
     } catch (e) {
@@ -63,12 +61,8 @@ export default function Dashboard() {
           <h1 className="dashboard-title">Overview</h1>
           <p className="dashboard-subtitle">Pantau status pemilu dan integritas sistem PACE.</p>
         </div>
-        <div className="header-actions">
-          {/* Tombol Export Log disembunyikan sampai endpoint tersedia */}
-        </div>
       </header>
 
-      {/* Stats */}
       <div className="grid-cards">
         <div className="stat-card">
           <div className="stat-icon bg-blue">
@@ -97,7 +91,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Active Election Table */}
       <div className="table-container">
         <div className="table-header">
           <h3>Pemilu Berjalan / Terdaftar</h3>
@@ -134,7 +127,6 @@ export default function Dashboard() {
         </table>
       </div>
 
-      {/* Audit Log Preview */}
       <div className="audit-log">
         <div className="table-header" style={{ padding: '0 0 20px 0', borderBottom: 'none' }}>
           <h3>Live Audit Log (HMAC Chain)</h3>
