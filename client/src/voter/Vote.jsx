@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { loadPrivateKey } from '../crypto/keystore.js';
 import { sealBallot } from '../crypto/seal.js';
+import { API_BASE_URL } from '../config';
 
 export default function Vote() {
   const { electionId, candidateId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const ballotNumber = location.state?.ballotNumber || candidateId; // Fallback ke candidateId jika dibuka langsung
+  const ballotNumber = location.state?.ballotNumber || candidateId;
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -42,7 +43,7 @@ export default function Vote() {
 
       // 2. Fetch RSA Public Key KPU
       const token = localStorage.getItem('token');
-      const res = await fetch(`/api/elections/${electionId}/pubkey`, {
+      const res = await fetch(`${API_BASE_URL}/api/elections/${electionId}/pubkey`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!res.ok) throw new Error('Gagal mengambil kunci publik pemilihan dari KPU');
@@ -74,7 +75,7 @@ export default function Vote() {
       setProcessDesc('Mengirim envelope aman ke server...');
 
       // 4. Kirim ke Server
-      const voteRes = await fetch(`/api/elections/${electionId}/vote`, {
+      const voteRes = await fetch(`${API_BASE_URL}/api/elections/${electionId}/vote`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -87,7 +88,6 @@ export default function Vote() {
       
       if (!voteRes.ok) {
         if (voteData.error === 'Voter public key not registered') {
-          // Deteksi kunci stale (sisa uji coba sebelumnya)
           const actualVoterId = localStorage.getItem('voter_id');
           localStorage.removeItem(`pace_voter_private_key_${actualVoterId}`);
           alert('Sesi kunci Anda sudah tidak valid (mungkin karena reset database). Silakan buat kunci baru.');
