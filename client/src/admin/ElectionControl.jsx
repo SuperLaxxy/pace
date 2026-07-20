@@ -1,10 +1,8 @@
 import { useState } from 'react';
+import { API_BASE_URL } from '../config';
 
 export default function ElectionControl({ election, onUpdate }) {
   const [loading, setLoading] = useState(false);
-  
-  // 🟢 Ganti baris 7 menjadi:
-  const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
 
   const updateStatus = async (newStatus) => {
     if (newStatus === 'closed') {
@@ -14,7 +12,7 @@ export default function ElectionControl({ election, onUpdate }) {
     }
 
     setLoading(true);
-    const res = await fetch(`${baseUrl}/api/admin/elections/${election.id}/status`, {
+    const res = await fetch(`${API_BASE_URL}/api/admin/elections/${election.id}/status`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
