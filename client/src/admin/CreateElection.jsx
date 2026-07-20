@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 export default function CreateElection() {
   const [title, setTitle] = useState('');
@@ -12,16 +13,13 @@ export default function CreateElection() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // 🟢 Ganti baris 15 menjadi:
-  const baseUrl = 'https://pacebackend-3xerr6kk.b4a.run';
-
   const handleCreate = async (e) => {
     e.preventDefault();
     if (loading) return;
     setLoading(true);
     
     try {
-      const res = await fetch(`${baseUrl}/api/admin/elections`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/elections`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -33,7 +31,6 @@ export default function CreateElection() {
         const data = await res.json();
         setError('');
         setElectionId(data.id);
-        // UX Kritis A: Show modal with private key
         setPrivateKeyPem(data.privateKeyPem);
       } else {
         const data = await res.json();
